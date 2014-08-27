@@ -122,6 +122,11 @@ static UIImage *is_blockFailedImage = 0;
     self.is_bottomBlockInProgress = NO;
 }
 
+- (BOOL)is_infiniteScrollActivated
+{
+    return self.is_topBlock != nil || self.is_bottomBlock != nil;
+}
+
 - (BOOL)is_checkContentOffset:(BOOL *)top
 {
     if (top)
@@ -133,6 +138,12 @@ static UIImage *is_blockFailedImage = 0;
 
 - (void)is_setContentOffset:(CGPoint)contentOffset
 {
+    if ([self is_infiniteScrollActivated] == NO)
+    {
+        [self is_setContentOffset:contentOffset];
+        return;
+    }
+    
     [self is_setContentOffset:contentOffset];
     if (!self.is_topBlock && !self.is_bottomBlock)
         return;
@@ -168,12 +179,24 @@ static UIImage *is_blockFailedImage = 0;
 
 - (void)is_setContentInset:(UIEdgeInsets)contentInset
 {
+    if ([self is_infiniteScrollActivated] == NO)
+    {
+        [self is_setContentInset:contentInset];
+        return;
+    }
+    
     self.is_contentInset = [NSValue valueWithUIEdgeInsets:contentInset];
     [self is_updateContent];
 }
 
 - (void)is_setContentSize:(CGSize)contentSize
 {
+    if ([self is_infiniteScrollActivated] == NO)
+    {
+        [self is_setContentSize:contentSize];
+        return;
+    }
+    
     self.is_contentSize = [NSValue valueWithCGSize:contentSize];
     [self is_updateContent];
 }
